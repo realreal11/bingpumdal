@@ -577,7 +577,7 @@ export default function LandingPage() {
                className="w-full max-w-sm md:max-w-2xl mx-auto mb-10 lg:mb-16 z-20 relative"
              >
                {/* Mobile Phone Call Button */}
-               <a href="tel:070-7913-5353" className="md:hidden w-full py-5 bg-brand-tomato text-white font-black text-xl rounded-2xl shadow-lg shadow-red-100/20 hover:bg-[#D32F2F] transition-all flex items-center justify-center gap-3">
+               <a href="tel:070-4517-3015" className="md:hidden w-full py-5 bg-brand-tomato text-white font-black text-xl rounded-2xl shadow-lg shadow-red-100/20 hover:bg-[#D32F2F] transition-all flex items-center justify-center gap-3">
                  <PhoneCall className="w-6 h-6" /> 바로 전화상담하기!
                </a>
                
@@ -589,7 +589,7 @@ export default function LandingPage() {
                      <PhoneCall className="w-8 h-8" />
                    </div>
                    <span className="text-5xl lg:text-6xl font-black text-white tracking-tighter drop-shadow-md">
-                     070-7913-5353
+                     070-4517-3015
                    </span>
                  </div>
                  <p className="text-2xl lg:text-3xl text-[#F1C40F] font-black tracking-tight drop-shadow-md relative z-10">
@@ -1608,7 +1608,7 @@ export default function LandingPage() {
                </p>
                
                {/* Mobile Call Button */}
-               <a href="tel:070-7913-5353" className="md:hidden w-full max-w-sm py-5 bg-brand-tomato text-white font-black text-xl rounded-2xl shadow-lg shadow-red-100 hover:bg-[#D32F2F] transition-all flex items-center justify-center gap-3">
+               <a href="tel:070-4517-3015" className="md:hidden w-full max-w-sm py-5 bg-brand-tomato text-white font-black text-xl rounded-2xl shadow-lg shadow-red-100 hover:bg-[#D32F2F] transition-all flex items-center justify-center gap-3">
                  <PhoneCall className="w-6 h-6" /> 바로 전화상담하기!
                </a>
 
@@ -1616,7 +1616,7 @@ export default function LandingPage() {
                <div className="hidden md:flex flex-col items-center">
                  <div className="flex items-center gap-3 mb-2">
                    <PhoneCall className="w-8 h-8 text-brand-tomato" />
-                   <span className="text-4xl font-black text-[#1A1A1C] tracking-tight text-brand-tomato">070-7913-5353</span>
+                   <span className="text-4xl font-black text-[#1A1A1C] tracking-tight text-brand-tomato">070-4517-3015</span>
                  </div>
                  <p className="text-sm text-gray-500 mt-4 leading-relaxed font-bold">
                    위 번호로 전화주시면 바로 전문 상담원과 연결됩니다.
@@ -1691,7 +1691,7 @@ export default function LandingPage() {
               <div className="pt-6 border-t border-white/5 space-y-2 text-xs md:text-sm">
                 <p>상호: 읁 ㅣ 대표자: 안상준 ㅣ 사업자등록번호: 614-04-69179</p>
                 <p>주소: 서울특별시 관악구 조원로 30</p>
-                <p>대표번호: 070-7913-5353 ㅣ 이메일: eunzcompany@gmail.com</p>
+                <p>대표번호: 070-4517-3015 ㅣ 이메일: eunzcompany@gmail.com</p>
               </div>
             </div>
 
@@ -1700,7 +1700,7 @@ export default function LandingPage() {
                 <p>가맹본부: 주식회사 유니큐랩</p>
                 <p>상담 접수 업무 수탁사: 읁</p>
                 <p>개인정보 보호책임자: 안상준</p>
-                <p>개인정보 문의: eunzcompany@gmail.com / 070-7913-5353</p>
+                <p>개인정보 문의: eunzcompany@gmail.com / 070-4517-3015</p>
               </div>
 
               <p className="pt-4 text-[10px] text-gray-600 uppercase tracking-widest">
@@ -1713,7 +1713,7 @@ export default function LandingPage() {
 
       {/* Floating Action Button - Mobile */}
       <a 
-        href="tel:070-7913-5353"
+        href="tel:070-4517-3015"
         className="md:hidden fixed z-[60] active:scale-95 transition-transform will-change-transform"
         style={{ 
           bottom: 'max(1.5rem, calc(env(safe-area-inset-bottom) + 1.5rem))', 
