@@ -2052,6 +2052,20 @@ export default function LandingPage() {
                 </div>
               ) : (
                 <div className="flex flex-col gap-2 w-full lg:max-w-4xl">
+                  {/* 에러 상태 깃 기재 */}
+                  {bottomSubmitStatus === 'error' && (
+                    <div className="text-[#FFCDD2] text-xs font-black bg-red-950/50 border border-red-500/30 rounded-lg px-3.5 py-2 flex items-center justify-between gap-4 mb-1">
+                      <span>⚠️ 전송 실패: 키 설정을 확인하거나 대표번호(070-4517-3015)로 직접 상담을 예약해주시기 바랍니다.</span>
+                      <button 
+                        type="button" 
+                        onClick={() => setBottomSubmitStatus('idle')} 
+                        className="underline hover:text-white shrink-0 font-bold"
+                      >
+                        재시도
+                      </button>
+                    </div>
+                  )}
+
                   {/* 개인정보 제공 동의 간편 라인 */}
                   <div className="flex items-center justify-between text-[11px] sm:text-xs text-gray-300 px-1 font-semibold">
                     <label className="flex items-center gap-1.5 cursor-pointer select-none">
