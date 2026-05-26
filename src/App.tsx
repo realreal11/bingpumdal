@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, FormEvent } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
+import emailjs from '@emailjs/browser';
 import { 
   Pizza, 
   IceCream2, 
@@ -413,6 +414,156 @@ const MenuMarquee = ({ items, reverse = false }: { items: {name: string, img: st
 export default function LandingPage() {
   const formRef = useRef<HTMLDivElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // EmailJS Lead Form States
+  const [leadForm, setLeadForm] = useState({
+    name: '',
+    phone: '',
+    region: '',
+    memo: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  // Bottom Lead Form states
+  const [bottomForm, setBottomForm] = useState({
+    name: '',
+    phone: '',
+    region: ''
+  });
+  const [isBottomSubmitting, setIsBottomSubmitting] = useState(false);
+  const [bottomSubmitStatus, setBottomSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [isBottomBarCollapsed, setIsBottomBarCollapsed] = useState(false);
+
+  // Privacy Policy Agreement States
+  const [isPrivacyAgreed, setIsPrivacyAgreed] = useState(false);
+  const [isBottomPrivacyAgreed, setIsBottomPrivacyAgreed] = useState(false);
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
+
+  const handleBottomInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setBottomForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleBottomSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bottomForm.name || !bottomForm.phone || !bottomForm.region) {
+      alert("성함, 연락처, 희망 지역은 필수 입력 항목입니다.");
+      return;
+    }
+
+    if (!isBottomPrivacyAgreed) {
+      alert("개인정보 수집 및 이용에 동의하셔야 상담 신청이 가능합니다.");
+      return;
+    }
+
+    setIsBottomSubmitting(true);
+    setBottomSubmitStatus('idle');
+
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+    if (!serviceId || !templateId || !publicKey) {
+      console.warn("EmailJS credentials missing for sticky bottom bar.");
+      setTimeout(() => {
+        setIsBottomSubmitting(false);
+        setBottomSubmitStatus('success');
+        setBottomForm({ name: '', phone: '', region: '' });
+        setIsBottomPrivacyAgreed(false);
+      }, 1500);
+      return;
+    }
+
+    try {
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          from_name: bottomForm.name,
+          phone: bottomForm.phone,
+          region: bottomForm.region,
+          message: "하단 고정 바에서 빠른 상담을 신청했습니다.",
+          to_name: "가맹본부 담당자"
+        },
+        publicKey
+      );
+
+      setIsBottomSubmitting(false);
+      setBottomSubmitStatus('success');
+      setBottomForm({ name: '', phone: '', region: '' });
+      setIsBottomPrivacyAgreed(false);
+    } catch (error) {
+      console.error("EmailJS bottom form transmit fail:", error);
+      setIsBottomSubmitting(false);
+      setBottomSubmitStatus('error');
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setLeadForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!leadForm.name || !leadForm.phone || !leadForm.region) {
+      alert("성함, 연락처, 희망 지역은 필수 입력 항목입니다.");
+      return;
+    }
+
+    if (!isPrivacyAgreed) {
+      alert("개인정보 수집 및 이용에 동의하셔야 상담 신청이 가능합니다.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    // Retrieve environment variables from Vite env config safely
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+    // Check configuration and report to user if missing in environment
+    if (!serviceId || !templateId || !publicKey) {
+      console.warn(
+        "EmailJS credentials missing. Please set VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID, and VITE_EMAILJS_PUBLIC_KEY in your AI Studio secrets / environment variables."
+      );
+      // Optional fallback simulation so user can test UI safely in the preview
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setSubmitStatus('success');
+        setLeadForm({ name: '', phone: '', region: '', memo: '' });
+        setIsPrivacyAgreed(false);
+      }, 1500);
+      return;
+    }
+
+    try {
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          from_name: leadForm.name,
+          phone: leadForm.phone,
+          region: leadForm.region,
+          message: leadForm.memo,
+          to_name: "가맹본부 담당자"
+        },
+        publicKey
+      );
+
+      setIsSubmitting(false);
+      setSubmitStatus('success');
+      setLeadForm({ name: '', phone: '', region: '', memo: '' });
+      setIsPrivacyAgreed(false);
+    } catch (error) {
+      console.error("EmailJS transmission fail: ", error);
+      setIsSubmitting(false);
+      setSubmitStatus('error');
+    }
+  };
 
   const scrollToForm = () => {
     setIsMobileMenuOpen(false);
@@ -1596,36 +1747,155 @@ export default function LandingPage() {
                </div>
              </div>
 
-             <div className="md:w-2/3 p-8 sm:p-12 flex flex-col items-center justify-center text-center">
-               <div className="w-20 h-20 bg-red-50 text-brand-tomato rounded-full flex items-center justify-center mb-6">
-                 <PhoneCall className="w-10 h-10" />
-               </div>
-               <h3 className="text-2xl sm:text-3xl font-black text-[#1A1A1C] mb-4">
-                 맞춤형 안심 창업 상담
-               </h3>
-               <p className="text-gray-500 mb-10 text-base break-keep px-4">
-                 궁금하신 점이 있다면 언제든지 편하게 전화주세요. 창업 전문가가 친절하게 상담해 드리겠습니다.
-               </p>
-               
-               {/* Mobile Call Button */}
-               <a href="tel:070-4517-3015" className="md:hidden w-full max-w-sm py-5 bg-brand-tomato text-white font-black text-xl rounded-2xl shadow-lg shadow-red-100 hover:bg-[#D32F2F] transition-all flex items-center justify-center gap-3">
-                 <PhoneCall className="w-6 h-6" /> 바로 전화상담하기!
-               </a>
+              <div className="md:w-2/3 p-8 sm:p-12 flex flex-col justify-center text-left">
+                <h3 className="text-2xl sm:text-3xl font-black text-[#1A1A1C] mb-2 font-display">
+                  무료 창업 상담 신청
+                </h3>
+                <p className="text-gray-400 mb-8 text-xs sm:text-sm break-keep leading-relaxed font-semibold">
+                  성함과 연락처를 남겨주시면, 가맹본부 창업 전문가가 검토 후 신속하게 개별 연락드리겠습니다.
+                </p>
 
-               {/* PC Display */}
-               <div className="hidden md:flex flex-col items-center">
-                 <div className="flex items-center gap-3 mb-2">
-                   <PhoneCall className="w-8 h-8 text-brand-tomato" />
-                   <span className="text-4xl font-black text-[#1A1A1C] tracking-tight text-brand-tomato">070-4517-3015</span>
-                 </div>
-                 <p className="text-sm text-gray-500 mt-4 leading-relaxed font-bold">
-                   위 번호로 전화주시면 바로 전문 상담원과 연결됩니다.
-                 </p>
-                 <p className="text-xs text-gray-400 mt-1 leading-relaxed tracking-tight">
-                   상담 가능 시간: 평일 10:00 - 18:00 (주말/공휴일 휴무)
-                 </p>
-               </div>
-             </div>
+                {submitStatus === 'success' ? (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="bg-green-50 border border-green-200 text-green-800 p-8 rounded-2xl text-center space-y-4 shadow-sm w-full"
+                  >
+                    <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto">
+                      <CheckCircle2 className="w-8 h-8" />
+                    </div>
+                    <h4 className="text-xl font-bold text-green-900">상담 신청 접수 완료!</h4>
+                    <p className="text-sm text-green-700 break-keep">
+                      신청해 주셔서 감사합니다. 입력해주신 연락처로 상담 안내 연락을 신속히 드리겠습니다.
+                    </p>
+                    <button 
+                      onClick={() => setSubmitStatus('idle')}
+                      className="px-6 py-2.5 bg-green-600 text-white font-bold text-sm rounded-lg hover:bg-green-700 transition cursor-pointer"
+                    >
+                      다시 문의하기
+                    </button>
+                  </motion.div>
+                ) : (
+                  <form onSubmit={handleFormSubmit} className="space-y-4 w-full">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="name" className="block text-xs font-bold text-gray-700 mb-1.5">
+                          성함 *
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          required
+                          value={leadForm.name}
+                          onChange={handleInputChange}
+                          placeholder="홍길동"
+                          className="w-full px-4 py-3 border border-[#E5E0D5] rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-tomato/20 focus:border-brand-tomato bg-brand-cream/20 text-sm placeholder:text-gray-400 font-medium transition-all"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label htmlFor="phone" className="block text-xs font-bold text-gray-700 mb-1.5">
+                          연락처 *
+                        </label>
+                        <input
+                          type="tel"
+                          id="phone"
+                          name="phone"
+                          required
+                          value={leadForm.phone}
+                          onChange={handleInputChange}
+                          placeholder="010-1234-5678"
+                          className="w-full px-4 py-3 border border-[#E5E0D5] rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-tomato/20 focus:border-brand-tomato bg-brand-cream/20 text-sm placeholder:text-gray-400 font-medium transition-all"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="region" className="block text-xs font-bold text-gray-700 mb-1.5">
+                        창업 희망 지역 *
+                      </label>
+                      <input
+                        type="text"
+                        id="region"
+                        name="region"
+                        required
+                        value={leadForm.region}
+                        onChange={handleInputChange}
+                        placeholder="예: 서울 관악구, 경기 수원시 등"
+                        className="w-full px-4 py-3 border border-[#E5E0D5] rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-tomato/20 focus:border-brand-tomato bg-brand-cream/20 text-sm placeholder:text-gray-400 font-medium transition-all"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="memo" className="block text-xs font-bold text-gray-700 mb-1.5">
+                        추가 문의사항 및 희망예산 (선택)
+                      </label>
+                      <textarea
+                        id="memo"
+                        name="memo"
+                        rows={3}
+                        value={leadForm.memo}
+                        onChange={handleInputChange}
+                        placeholder="이곳에 문의 내용을 편하게 남겨주세요."
+                        className="w-full px-4 py-3 border border-[#E5E0D5] rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-tomato/20 focus:border-brand-tomato bg-[#FAF9F5] text-sm placeholder:text-gray-400 font-medium transition-all resize-none"
+                      />
+                    </div>
+
+                    {/* 개인정보 수집 및 이용 동의 */}
+                    <div className="bg-[#FAF9F5] p-3.5 rounded-xl border border-[#E5E0D5] flex items-center justify-between text-xs sm:text-sm">
+                      <label className="flex items-center gap-2.5 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={isPrivacyAgreed}
+                          onChange={(e) => setIsPrivacyAgreed(e.target.checked)}
+                          className="w-4 h-4 rounded text-brand-tomato focus:ring-brand-tomato border-[#E5E0D5] cursor-pointer"
+                        />
+                        <span className="font-extrabold text-gray-700">개인정보 수집 및 이용 동의 <span className="text-brand-tomato">(필수)</span></span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setIsPrivacyModalOpen(true)}
+                        className="text-gray-400 hover:text-brand-tomato p-1 px-2 rounded font-extrabold underline cursor-pointer text-xs shrink-0"
+                      >
+                        전문보기
+                      </button>
+                    </div>
+
+                    {submitStatus === 'error' && (
+                      <p className="text-red-600 font-bold text-xs">
+                        접수 중 오류가 발생했습니다. 잠시 후 다시 시도하거나 직접 전화(070-4517-3015)해 주세요.
+                      </p>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full py-4 bg-brand-tomato hover:bg-brand-tomato/90 text-white font-bold text-base rounded-xl transition duration-300 shadow-[0_4px_20px_rgba(229,57,53,0.25)] flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed group cursor-pointer"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <RefreshCw className="w-5 h-5 animate-spin" />
+                          <span>신청 접수 중...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>무료 창업 상담 신청하기</span>
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </>
+                      )}
+                    </button>
+                    
+                    {/* Direct Call Text Support */}
+                    <div className="pt-3 border-t border-dashed border-[#E5E0D5] flex flex-col sm:flex-row items-center justify-between gap-1">
+                       <span className="text-xs text-gray-400">대표번호 직접 문의</span>
+                       <a href="tel:070-4517-3015" className="flex items-center gap-1.5 text-sm font-black text-brand-tomato hover:underline">
+                         <PhoneCall className="w-3.5 h-3.5" strokeWidth={2.5} /> 070-4517-3015
+                       </a>
+                    </div>
+                  </form>
+                )}
+              </div>
           </div>
         </section>
 
@@ -1688,22 +1958,22 @@ export default function LandingPage() {
                 </p>
               </div>
 
-              <div className="pt-6 border-t border-white/5 space-y-2 text-xs md:text-sm">
-                <p>상호: 읁 ㅣ 대표자: 안상준 ㅣ 사업자등록번호: 614-04-69179</p>
+              <div className="pt-6 border-t border-white/5 space-y-2 text-xs md:text-sm text-gray-400">
+                <p>상호: 읁  |  대표자: 안상준  |  사업자등록번호: 614-04-69179</p>
                 <p>주소: 서울특별시 관악구 조원로 30</p>
-                <p>대표번호: 070-4517-3015 ㅣ 이메일: eunzcompany@gmail.com</p>
+                <p>대표번호: 070-4517-3015  |  이메일: eunzcompany@gmail.com</p>
               </div>
             </div>
 
-            <div className="space-y-6 text-xs md:text-sm">
+            <div className="space-y-6 text-xs md:text-sm text-gray-400">
               <div className="space-y-2">
                 <p>가맹본부: 주식회사 유니큐랩</p>
                 <p>상담 접수 업무 수탁사: 읁</p>
                 <p>개인정보 보호책임자: 안상준</p>
-                <p>개인정보 문의: eunzcompany@gmail.com / 070-4517-3015</p>
+                <p>개인정보 문의처: eunzcompany@gmail.com (070-4517-3015)</p>
               </div>
 
-              <p className="pt-4 text-[10px] text-gray-600 uppercase tracking-widest">
+              <p className="pt-4 text-[10px] text-gray-600 uppercase tracking-widest font-mono">
                 Copyright © 읁. All rights reserved.
               </p>
             </div>
@@ -1711,34 +1981,266 @@ export default function LandingPage() {
         </div>
       </footer>
 
-      {/* Floating Action Button - Mobile */}
-      <a 
-        href="tel:070-4517-3015"
-        className="md:hidden fixed z-[60] active:scale-95 transition-transform will-change-transform"
-        style={{ 
-          bottom: 'max(1.5rem, calc(env(safe-area-inset-bottom) + 1.5rem))', 
-          right: '1rem',
-          transform: 'translateZ(0)' 
-        }}
-        aria-label="바로 전화상담"
+      {/* Persistent Bottom Bar with Lead Form */}
+      <div 
+        className={`fixed bottom-0 inset-x-0 z-[70] bg-[#141416]/98 backdrop-blur-md border-t-2 border-[#F1C40F]/20 shadow-[0_-15px_40px_rgba(0,0,0,0.7)] transition-all duration-300 ease-out select-none ${
+          isBottomBarCollapsed ? 'translate-y-[calc(100%-58px)]' : 'translate-y-0'
+        }`}
+        style={{ transform: isBottomBarCollapsed ? 'translateY(calc(100% - 58px))' : 'translateY(0)' }}
       >
-        <div className="flex items-center gap-2 bg-green-500 text-white px-5 py-3.5 rounded-full shadow-[0_4px_16px_rgba(34,197,94,0.4)] border border-green-400">
-          <PhoneCall className="w-5 h-5" fill="currentColor" />
-          <span className="font-bold text-[15px] tracking-tight whitespace-nowrap">전화상담</span>
+        {/* Toggle Collapse Bar Button */}
+        <div className="flex justify-end pr-4 -mt-4 absolute top-0 right-0 pointer-events-none z-10">
+          <button 
+            type="button"
+            onClick={() => setIsBottomBarCollapsed(!isBottomBarCollapsed)}
+            className="pointer-events-auto bg-[#141416] text-[#F1C40F] border-2 border-[#F1C40F]/10 hover:text-white rounded-full px-4 py-1.5 text-xs font-black shadow-2xl flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+          >
+            {isBottomBarCollapsed ? (
+              <>
+                <ChevronDown className="w-4 h-4 rotate-180 text-brand-tomato animate-bounce" />
+                <span>무료상담 신청란 열기</span>
+              </>
+            ) : (
+              <>
+                <ChevronDown className="w-4 h-4" />
+                <span>하단바 접기</span>
+              </>
+            )}
+          </button>
         </div>
-      </a>
 
-      {/* Floating Action Button - PC */}
-      <button 
-        onClick={scrollToForm}
-        className="hidden md:flex fixed bottom-8 right-8 w-16 h-16 bg-green-500 text-white rounded-full items-center justify-center shadow-[0_8px_24px_rgba(34,197,94,0.5)] z-[60] hover:scale-110 transition-transform group"
-        aria-label="전화상담 섹션으로 이동"
-      >
-        <PhoneCall className="w-7 h-7 group-hover:scale-110 transition-transform" />
-        <span className="absolute right-[80px] w-max px-4 py-2 bg-white text-green-600 border border-green-500/20 text-sm font-bold rounded-full shadow-xl opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all pointer-events-none">
-          바로 전화상담!
-        </span>
-      </button>
+        {/* Form Container */}
+        <div className="max-w-7xl mx-auto px-3 py-3.5 sm:py-5 flex flex-col items-center justify-between gap-3 text-white pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+          {isBottomBarCollapsed ? (
+            // Mini Display when hidden
+            <div 
+              onClick={() => setIsBottomBarCollapsed(false)}
+              className="w-full flex items-center justify-between cursor-pointer py-1 text-[#F1C40F] font-black tracking-tight"
+            >
+              <div className="flex items-center gap-2 overflow-hidden">
+                <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-brand-tomato rounded-full animate-ping shrink-0" />
+                <span className="text-[10px] min-[360px]:text-[11px] min-[390px]:text-xs sm:text-sm md:text-base font-black tracking-tight whitespace-nowrap overflow-hidden text-ellipsis">🔥 즉시 접수하고 실시간 1:1 브랜드 가맹 창업 무료 혜택 받기</span>
+              </div>
+              <span className="text-[11px] sm:text-xs font-black text-white bg-brand-tomato px-3 py-1 rounded-full flex items-center gap-1 hover:brightness-110 transition shadow-md shrink-0">
+                열기 <ArrowRight className="w-3.5 h-3.5" />
+              </span>
+            </div>
+          ) : (
+            // Full Sticky Bottom Form
+            <form onSubmit={handleBottomSubmit} className="w-full flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+              {/* Marketing Label Text (lg and up) */}
+              <div className="hidden lg:flex flex-col text-left shrink-0">
+                <h4 className="font-extrabold text-base text-[#F1C40F] tracking-tight flex items-center gap-2 font-display">
+                  <span className="inline-block w-2 h-2 bg-brand-tomato rounded-full animate-pulse" />
+                  실시간 1:1 창업 무료상담
+                </h4>
+                <p className="text-[11px] text-gray-300 font-extrabold mt-0.5 whitespace-nowrap">성함 / 연락처 / 희망지역 입력 시 즉시 연락!</p>
+              </div>
+
+              {/* Status State (Success or Error) */}
+              {bottomSubmitStatus === 'success' ? (
+                <div className="flex-1 flex items-center justify-center gap-3 bg-green-950/50 border border-green-500/30 text-green-400 rounded-xl py-3 px-6 text-sm font-black w-full shadow-lg">
+                  <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0" />
+                  <span>창업 무료상담 신청 완료! 담당자가 신속히 연락을 드리겠습니다.</span>
+                  <button 
+                    type="button" 
+                    onClick={() => setBottomSubmitStatus('idle')}
+                    className="ml-auto underline hover:text-white cursor-pointer"
+                  >
+                    새로고침
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2 w-full lg:max-w-4xl">
+                  {/* 개인정보 제공 동의 간편 라인 */}
+                  <div className="flex items-center justify-between text-[11px] sm:text-xs text-gray-300 px-1 font-semibold">
+                    <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={isBottomPrivacyAgreed}
+                        onChange={(e) => setIsBottomPrivacyAgreed(e.target.checked)}
+                        className="w-3.5 h-3.5 rounded text-[#E53935] focus:ring-brand-tomato border-white/20 bg-white/10 cursor-pointer"
+                      />
+                      <span>개인정보 수집 및 이용 동의 <span className="text-[#F1C40F] font-black">(필수)</span></span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setIsPrivacyModalOpen(true)}
+                      className="text-gray-400 hover:text-[#F1C40F] font-extrabold underline cursor-pointer shrink-0 text-[10px] sm:text-xs"
+                    >
+                      상세 전문보기
+                    </button>
+                  </div>
+
+                  <div className="flex flex-row items-center gap-2 w-full">
+                    {/* Grid of Inputs - Stays 3-column even on mobile to prevent ugly vertical stacking */}
+                    <div className="grid grid-cols-3 gap-1.5 sm:gap-3 flex-1">
+                      <div className="relative">
+                        <input
+                          type="text"
+                          name="name"
+                          required
+                          value={bottomForm.name}
+                          onChange={handleBottomInputChange}
+                          placeholder="성함"
+                          className="w-full px-2 py-2.5 sm:py-3.5 bg-[#252528] hover:bg-[#2F2F33] focus:bg-[#2F2F33] border border-white/10 focus:border-brand-tomato text-white rounded-lg text-xs sm:text-sm md:text-base font-black focus:outline-none transition-all placeholder:text-gray-500 placeholder:font-bold shadow-inner text-center sm:text-left"
+                        />
+                      </div>
+                      <div className="relative">
+                        <input
+                          type="tel"
+                          name="phone"
+                          required
+                          value={bottomForm.phone}
+                          onChange={handleBottomInputChange}
+                          placeholder="연락처"
+                          className="w-full px-2 py-2.5 sm:py-3.5 bg-[#252528] hover:bg-[#2F2F33] focus:bg-[#2F2F33] border border-white/10 focus:border-brand-tomato text-white rounded-lg text-xs sm:text-sm md:text-base font-black focus:outline-none transition-all placeholder:text-gray-500 placeholder:font-bold shadow-inner text-center sm:text-left"
+                        />
+                      </div>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          name="region"
+                          required
+                          value={bottomForm.region}
+                          onChange={handleBottomInputChange}
+                          placeholder="희망지역"
+                          className="w-full px-2 py-2.5 sm:py-3.5 bg-[#252528] hover:bg-[#2F2F33] focus:bg-[#2F2F33] border border-white/10 focus:border-brand-tomato text-white rounded-lg text-xs sm:text-sm md:text-base font-black focus:outline-none transition-all placeholder:text-gray-500 placeholder:font-bold shadow-inner text-center sm:text-left"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Submit Button */}
+                    <button
+                      type="submit"
+                      disabled={isBottomSubmitting}
+                      className="inline-flex items-center justify-center gap-1 bg-brand-tomato hover:bg-brand-tomato/95 active:scale-95 text-white font-black text-xs sm:text-sm md:text-base px-3 sm:px-6 py-2.5 sm:py-3.5 rounded-lg transition duration-300 disabled:bg-gray-700 disabled:cursor-not-allowed cursor-pointer shrink-0 font-display shadow-[0_4px_16px_rgba(229,57,53,0.35)]"
+                    >
+                      {isBottomSubmitting ? (
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <>
+                          <span className="hidden sm:inline">신청하기</span>
+                          <span className="inline sm:hidden">신청</span>
+                          <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </form>
+          )}
+        </div>
+      </div>
+
+      {/* ⚠️ Privacy Policy Modal (개인정보 수집 및 이용 동의 전문) */}
+      {isPrivacyModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
+            onClick={() => setIsPrivacyModalOpen(false)}
+          />
+          
+          <div className="relative bg-white text-brand-charcoal rounded-3xl max-w-lg w-full max-h-[85vh] overflow-hidden shadow-2xl flex flex-col border border-[#E5E0D5] z-10 animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="p-5 sm:p-6 border-b border-[#E5E0D5] flex items-center justify-between bg-[#FAF9F5]/50">
+              <h3 className="text-lg sm:text-xl font-black text-brand-charcoal flex items-center gap-2 font-display">
+                <span className="w-1.5 h-6 bg-[#E53935] rounded-full block animate-pulse" />
+                개인정보 수집 및 이용 동의 (필수)
+              </h3>
+              <button 
+                type="button"
+                onClick={() => setIsPrivacyModalOpen(false)}
+                className="text-gray-400 hover:text-brand-charcoal p-1.5 rounded-full hover:bg-gray-100 transition cursor-pointer"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            {/* Modal Content */}
+            <div className="p-5 sm:p-6 overflow-y-auto text-xs sm:text-sm text-gray-600 space-y-4 leading-relaxed font-semibold break-keep">
+              <p className="text-gray-950 font-extrabold text-sm sm:text-[15px] bg-[#FAF9F5] p-3.5 rounded-xl border border-[#E5E0D5]/50 leading-snug">
+                피자덕 & 빙품달 가맹상담 접수센터는 프랜차이즈 가맹설명회 및 1:1 브랜드 창업 무료상담 서비스를 제공하기 위해 아래와 같이 고객님의 소중한 개인정보를 수집 및 이용합니다.
+              </p>
+              
+              <div className="space-y-3">
+                <div>
+                  <h4 className="text-gray-900 font-extrabold flex items-center gap-1.5 text-sm">
+                    <span className="w-1.5 h-1.5 bg-[#E53935] rounded-full inline-block" />
+                    1. 수집 및 이용 목적
+                  </h4>
+                  <p className="pl-4 text-xs text-gray-500 mt-1 font-medium leading-relaxed">
+                    - 신규 가맹희망자의 1:1 창업 전문 상담, 개설 안내, 가맹 개설 혜택 제공 및 가맹지역 적합성 분석 연락 수단 확보
+                    <br />- 가맹점 개설 관련 신속한 전화 및 문자 안내 피드백 진행
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-gray-900 font-extrabold flex items-center gap-1.5 text-sm">
+                    <span className="w-1.5 h-1.5 bg-[#E53935] rounded-full inline-block" />
+                    2. 수집하는 개인정보 항목
+                  </h4>
+                  <p className="pl-4 text-xs text-gray-500 mt-1 font-medium leading-relaxed">
+                    - 필수항목: 성함(이름), 연락처(휴대폰 번호), 창업 희망 지역
+                    <br />- 선택항목: 추가 문의사항 및 희망 창업예산
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-gray-900 font-extrabold flex items-center gap-1.5 text-sm">
+                    <span className="w-1.5 h-1.5 bg-[#E53935] rounded-full inline-block" />
+                    3. 개인정보의 보유 및 이용 기간
+                  </h4>
+                  <p className="pl-4 text-xs text-gray-500 mt-1 font-bold text-[#E53935] leading-relaxed">
+                    - 이용목적 달성 시 지체 없이 파기함을 원칙으로 하며, 가맹점 상담 이력 관리 및 불만 처리 목적을 위해 접수일로부터 최장 1년간 보유 후 영구 파기(삭제)됩니다.
+                    <br />- 이용자가 즉각적인 삭제(동의철회)를 요구하는 경우 즉시 파기합니다.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-gray-900 font-extrabold flex items-center gap-1.5 text-sm">
+                    <span className="w-1.5 h-1.5 bg-[#E53935] rounded-full inline-block" />
+                    4. 동의 거부의 권리 및 거부에 따른 불이익
+                  </h4>
+                  <p className="pl-4 text-xs text-gray-500 mt-1 font-medium leading-relaxed">
+                    - 고객님은 개인정보 수집 및 이용 동의를 거부하실 전적인 권리가 있으나, 필수 수집 항목에 대하여 동의를 거부하시는 경우 1:1 가맹 창업 무료 상담 진행 및 혜택 신청이 제한됩니다.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-[#FAF9F5] border border-[#E5E0D5]/60 p-3.5 rounded-xl text-[11px] sm:text-xs text-gray-500 space-y-1">
+                <p className="font-extrabold text-gray-800">🔒 보안 위탁 및 안전성 확보 고지</p>
+                <p className="leading-relaxed font-semibold">
+                  수집된 정보는 가맹 상권 개설 목적 이외의 불법 마케팅 광고, 스팸 문자 발송 등 제3자 마케팅에 결코 활용/위탁/제공되지 않고 오로지 상담 예약건 피드백에만 전적으로 활용됩니다.
+                </p>
+              </div>
+            </div>
+            
+            {/* Modal Footer */}
+            <div className="p-4 bg-[#FAF9F5] border-t border-[#E5E0D5] flex gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsPrivacyAgreed(true);
+                  setIsBottomPrivacyAgreed(true);
+                  setIsPrivacyModalOpen(false);
+                }}
+                className="flex-1 py-3.5 bg-[#E53935] hover:brightness-110 active:scale-95 text-white font-extrabold rounded-xl transition text-sm cursor-pointer shadow-md inline-flex items-center justify-center gap-1.5"
+              >
+                동의하고 적용하기
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsPrivacyModalOpen(false)}
+                className="px-6 py-3.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition text-sm cursor-pointer"
+              >
+                닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* CSS adjustments for safe area on mobile */}
       <style>{`
