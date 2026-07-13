@@ -493,8 +493,10 @@ export default function LandingPage() {
       setBottomSubmitStatus('success');
       setBottomForm({ name: '', phone: '', region: '' });
       setIsBottomPrivacyAgreed(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("EmailJS bottom form transmit fail:", error);
+      const errorMsg = error?.text || error?.message || JSON.stringify(error);
+      console.error("EmailJS error detail:", errorMsg);
       setIsBottomSubmitting(false);
       setBottomSubmitStatus('error');
     }
@@ -558,8 +560,10 @@ export default function LandingPage() {
       setSubmitStatus('success');
       setLeadForm({ name: '', phone: '', region: '', memo: '' });
       setIsPrivacyAgreed(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("EmailJS transmission fail: ", error);
+      const errorMsg = error?.text || error?.message || JSON.stringify(error);
+      console.error("EmailJS error detail:", errorMsg);
       setIsSubmitting(false);
       setSubmitStatus('error');
     }
@@ -713,41 +717,172 @@ export default function LandingPage() {
                전문성과 안정성을 동시에 잡은 듀얼 코어 창업
              </motion.p>
              <motion.p 
-               initial={{ opacity: 0, scale: 0.5 }}
-               animate={{ opacity: 1, scale: 1 }}
-               transition={{ duration: 0.8, delay: 1.6, type: "spring", bounce: 0.6 }}
-               className="text-[#F1C40F] text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black mb-8 lg:mb-12 drop-shadow-lg break-keep tracking-tight"
-             >
-               총 2400만원 상당의 혜택 지원
-             </motion.p>
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 1.6, type: "spring", bounce: 0.6 }}
+                className="text-[#F1C40F] text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black mb-4 drop-shadow-lg break-keep tracking-tight"
+              >
+                총 2400만원 상당의 혜택 지원
+              </motion.p>
+              
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.7 }}
+                className="text-white text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 lg:mb-12 drop-shadow-md break-keep"
+              >
+                편한 업종변경!
+              </motion.p>
              
              <motion.div
                initial={{ opacity: 0, y: 20 }}
                animate={{ opacity: 1, y: 0 }}
                transition={{ duration: 0.8, delay: 1.8 }}
-               className="w-full max-w-sm md:max-w-2xl mx-auto mb-10 lg:mb-16 z-20 relative"
+               className="w-full max-w-xl mx-auto mb-10 lg:mb-16 z-40 relative text-left bg-white/10 backdrop-blur-md border border-white/20 p-6 sm:p-8 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
              >
                {/* Mobile Phone Call Button */}
-               <a href="tel:070-4517-3015" className="md:hidden w-full py-5 bg-brand-tomato text-white font-black text-xl rounded-2xl shadow-lg shadow-red-100/20 hover:bg-[#D32F2F] transition-all flex items-center justify-center gap-3">
-                 <PhoneCall className="w-6 h-6" /> 바로 전화상담하기!
+               <a href="#" onClick={(e) => { e.preventDefault(); scrollToForm(); }} className="hidden">
+                 
                </a>
                
                {/* PC Phone Call Display */}
-               <div className="hidden md:flex flex-col items-center justify-center py-8 px-12 rounded-[2rem] border-2 border-[#D32F2F]/50 bg-gradient-to-b from-[#111111]/90 to-[#1A1A1C]/90 backdrop-blur-md shadow-[0_0_40px_rgba(211,47,47,0.3)] transition-transform hover:scale-105 hover:shadow-[0_0_50px_rgba(211,47,47,0.5)] cursor-default relative overflow-hidden group">
-                 <div className="absolute inset-0 bg-[#D32F2F]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                 <div className="flex items-center gap-6 mb-4 relative z-10">
-                   <div className="w-16 h-16 bg-[#D32F2F] rounded-full flex items-center justify-center text-white shadow-lg animate-pulse">
-                     <PhoneCall className="w-8 h-8" />
-                   </div>
-                   <span className="text-5xl lg:text-6xl font-black text-white tracking-tighter drop-shadow-md">
-                     070-4517-3015
-                   </span>
-                 </div>
+               <div className="w-full flex flex-col relative">
+                                   <h3 className="text-white text-lg sm:text-xl font-black mb-5 text-center font-display flex items-center justify-center gap-2">
+                    <span className="w-2 h-2 bg-[#E53935] rounded-full animate-ping" />
+                    빠른 무료 창업상담 신청
+                  </h3>
+                                   <form onSubmit={handleFormSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="hero-name" className="block text-xs font-bold text-gray-300 mb-1.5 pl-1">
+                          성함 *
+                        </label>
+                        <input
+                          type="text"
+                          id="hero-name"
+                          name="name"
+                          required
+                          value={leadForm.name}
+                          onChange={handleInputChange}
+                          placeholder="성함 입력"
+                          className="w-full px-4 py-3 bg-[#1A1A1C]/80 hover:bg-[#252528] focus:bg-[#252528] border border-white/10 focus:border-[#E53935] text-white rounded-xl text-sm font-bold focus:outline-none transition-all placeholder:text-gray-500"
+                        />
+                      </div>
+                                         <div>
+                        <label htmlFor="hero-phone" className="block text-xs font-bold text-gray-300 mb-1.5 pl-1">
+                          연락처 *
+                        </label>
+                        <input
+                          type="tel"
+                          id="hero-phone"
+                          name="phone"
+                          required
+                          value={leadForm.phone}
+                          onChange={handleInputChange}
+                          placeholder="연락처 입력 (010-XXXX-XXXX)"
+                          className="w-full px-4 py-3 bg-[#1A1A1C]/80 hover:bg-[#252528] focus:bg-[#252528] border border-white/10 focus:border-[#E53935] text-white rounded-xl text-sm font-bold focus:outline-none transition-all placeholder:text-gray-500"
+                        />
+                      </div>
+                    </div>
+                                       <div>
+                      <label htmlFor="hero-region" className="block text-xs font-bold text-gray-300 mb-1.5 pl-1">
+                        창업 희망 지역 *
+                      </label>
+                      <input
+                        type="text"
+                        id="hero-region"
+                        name="region"
+                        required
+                        value={leadForm.region}
+                        onChange={handleInputChange}
+                        placeholder="예: 서울 관악구, 경기 수원시 등"
+                        className="w-full px-4 py-3 bg-[#1A1A1C]/80 hover:bg-[#252528] focus:bg-[#252528] border border-white/10 focus:border-[#E53935] text-white rounded-xl text-sm font-bold focus:outline-none transition-all placeholder:text-gray-500"
+                      />
+                    </div>
+
                  <p className="text-2xl lg:text-3xl text-[#F1C40F] font-black tracking-tight drop-shadow-md relative z-10">
-                   프리미엄 창업, <span className="text-white">바로 전화상담!</span>
-                 </p>
-               </div>
-             </motion.div>
+                   상담 신청 접수 완료 시 즉시 연락드립니다.
+                  </p>
+                  
+                  <div>
+                    <div>
+                      <label htmlFor="hero-memo" className="block text-xs font-bold text-gray-300 mb-1.5 pl-1">
+                        추가 문의사항 및 희망예산 (선택)
+                      </label>
+                      <textarea
+                        id="hero-memo"
+                        name="memo"
+                        rows={2}
+                        value={leadForm.memo}
+                        onChange={handleInputChange}
+                        placeholder="창업 예산 등 문의내용을 편하게 남겨주세요."
+                        className="w-full px-4 py-3 bg-[#1A1A1C]/80 hover:bg-[#252528] focus:bg-[#252528] border border-white/10 focus:border-[#E53935] text-white rounded-xl text-sm font-bold focus:outline-none transition-all placeholder:text-gray-500 resize-none"
+                      />
+                    </div>
+
+                    {/* 개인정보 제공 동의 */}
+                    <div className="bg-[#1A1A1C]/50 p-3 rounded-xl border border-white/5 flex items-center justify-between text-xs text-gray-300 font-semibold mt-4">
+                      <label className="flex items-center gap-2 cursor-pointer select-none font-semibold">
+                        <input
+                          type="checkbox"
+                          checked={isPrivacyAgreed}
+                          onChange={(e) => setIsPrivacyAgreed(e.target.checked)}
+                          className="w-4 h-4 rounded text-brand-tomato focus:ring-brand-tomato border-white/10 bg-white/5 cursor-pointer"
+                        />
+                        <span>개인정보 수집 및 이용 동의 <span className="text-[#F1C40F] font-black">(필수)</span></span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setIsPrivacyModalOpen(true)}
+                        className="text-gray-400 hover:text-white underline cursor-pointer font-bold shrink-0 text-[11px]"
+                      >
+                        전문보기
+                      </button>
+                    </div>
+
+                    {submitStatus === 'error' && (
+                      <p className="text-red-400 font-bold text-xs text-center mt-3">
+                        접수 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.
+                      </p>
+                    )}
+
+                    {submitStatus === 'success' && (
+                      <div className="bg-green-500/20 border border-green-500/30 rounded-xl p-3 text-center w-full mt-3">
+                        <p className="text-green-400 font-bold text-xs leading-relaxed">
+                          🎉 가맹 상담 신청이 성공적으로 접수되었습니다!<br/>기입해주신 연락처로 담당자가 신속히 안내전화 드리겠습니다.
+                        </p>
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full py-4 bg-[#E53935] hover:bg-[#D32F2F] text-white font-black text-base rounded-xl transition duration-300 shadow-[0_4px_20px_rgba(229,57,53,0.35)] flex items-center justify-center gap-2 disabled:bg-gray-700 disabled:cursor-not-allowed cursor-pointer mt-4"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <RefreshCw className="w-5 h-5 animate-spin" />
+                          <span>신청 접수 중...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>무료 창업 상담 신청하기</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+                
+                {/* Small Phone Consultation Link/Indicator */}
+                <div className="mt-6 pt-4 border-t border-white/10 text-center flex items-center justify-center gap-2 text-xs text-gray-400 font-bold">
+                  <span>빠른 전화상담 :</span>
+                  <a href="tel:070-4517-3015" className="text-[#F1C40F] hover:text-[#f39c12] font-black tracking-wider transition-colors flex items-center gap-1">
+                    <PhoneCall className="w-3.5 h-3.5" /> 070-4517-3015
+                  </a>
+                </div>
+              </div>
+              </motion.div>
              
              {/* Center Ticket Style Banner */}
              <motion.div 
@@ -755,7 +890,7 @@ export default function LandingPage() {
                 animate={{ opacity: 1, scale: 1, rotate: -1 }}
                 whileHover={{ scale: 1.05, rotate: 1 }}
                 transition={{ duration: 0.8, delay: 1.8, type: "spring", bounce: 0.5 }}
-                className="relative w-full max-w-lg md:max-w-2xl mx-auto mb-16 flex flex-col items-center justify-center z-20 cursor-default"
+                className="hidden"
              >
                 <div className="bg-[#FFFDF5] w-full p-10 sm:p-14 shadow-[0_30px_70px_rgba(0,0,0,0.6)] relative overflow-hidden rounded-[40px] border-[6px] border-[#1A1A1C]">
                   
@@ -1944,7 +2079,7 @@ export default function LandingPage() {
               <div className="space-y-4 text-xs md:text-sm leading-relaxed break-keep">
                 <p>
                   본 페이지는 주식회사 유니큐랩의 가맹상담 접수 페이지입니다.<br />
-                  읁은 주식회사 유니큐랩으로부터 광고 운영 및 상담 접수 업무를 위탁받아 운영합니다.
+                  은컴퍼니는 주식회사 유니큐랩으로부터 광고 운영 및 상담 접수 업무를 위탁받아 운영합니다.
                 </p>
                 
                 <p>
@@ -1959,7 +2094,7 @@ export default function LandingPage() {
               </div>
 
               <div className="pt-6 border-t border-white/5 space-y-2 text-xs md:text-sm text-gray-400">
-                <p>상호: 읁  |  대표자: 안상준  |  사업자등록번호: 614-04-69179</p>
+                <p>상호: 은컴퍼니  |  대표자: 안상준  |  사업자등록번호: 614-04-69179</p>
                 <p>주소: 서울특별시 관악구 조원로 30</p>
                 <p>대표번호: 070-4517-3015  |  이메일: eunzcompany@gmail.com</p>
               </div>
@@ -1968,13 +2103,13 @@ export default function LandingPage() {
             <div className="space-y-6 text-xs md:text-sm text-gray-400">
               <div className="space-y-2">
                 <p>가맹본부: 주식회사 유니큐랩</p>
-                <p>상담 접수 업무 수탁사: 읁</p>
+                <p>상담 접수 업무 수탁사: 은컴퍼니</p>
                 <p>개인정보 보호책임자: 안상준</p>
                 <p>개인정보 문의처: eunzcompany@gmail.com (070-4517-3015)</p>
               </div>
 
               <p className="pt-4 text-[10px] text-gray-600 uppercase tracking-widest font-mono">
-                Copyright © 읁. All rights reserved.
+                Copyright © 은컴퍼니. All rights reserved.
               </p>
             </div>
           </div>
