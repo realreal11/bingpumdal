@@ -708,37 +708,88 @@ export default function LandingPage() {
              >
                인생이 걸린 창업,<br/> 리스크를 최대한 줄여드립니다.
              </motion.h1>
-             <motion.p 
-               initial={{ opacity: 0, y: 20 }}
-               animate={{ opacity: 1, y: 0 }}
-               transition={{ duration: 0.6, delay: 1.4, ease: "easeOut" }}
-               className="text-white text-lg sm:text-xl md:text-3xl lg:text-4xl font-bold mb-4 drop-shadow-md break-keep"
-             >
-               전문성과 안정성을 동시에 잡은 듀얼 코어 창업
-             </motion.p>
+
              <motion.p 
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 1.6, type: "spring", bounce: 0.6 }}
-                className="text-[#F1C40F] text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black mb-4 drop-shadow-lg break-keep tracking-tight"
+                className="text-[#F1C40F] text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black mb-8 lg:mb-12 drop-shadow-lg break-keep tracking-tight"
               >
                 총 2400만원 상당의 혜택 지원
               </motion.p>
               
-              <motion.p
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 1.7 }}
-                className="text-white text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 lg:mb-12 drop-shadow-md break-keep"
-              >
-                편한 업종변경!
-              </motion.p>
+
              
+             
+             {/* Center Ticket Style Banner */}
+             <motion.div 
+                initial={{ opacity: 0, scale: 0.8, rotate: -4 }}
+                animate={{ opacity: 1, scale: 1, rotate: -1 }}
+                whileHover={{ scale: 1.05, rotate: 1 }}
+                transition={{ duration: 0.8, delay: 1.8, type: "spring", bounce: 0.5 }}
+                className="hidden"
+             >
+                <div className="bg-[#FFFDF5] w-full p-10 sm:p-14 shadow-[0_30px_70px_rgba(0,0,0,0.6)] relative overflow-hidden rounded-[40px] border-[6px] border-[#1A1A1C]">
+                  
+                  <div className="absolute top-1/2 -left-6 bg-[#18181A] w-12 h-12 rounded-full -translate-y-1/2 border-[6px] border-[#1A1A1C]"></div>
+                  <div className="absolute top-1/2 -right-6 bg-[#18181A] w-12 h-12 rounded-full -translate-y-1/2 border-[6px] border-[#1A1A1C]"></div>
+
+                  <div className="w-full border-b-[4px] border-dotted border-[#1A1A1C]/30 mb-8 mt-2"></div>
+                  <h3 className="text-4xl sm:text-5xl md:text-[60px] font-black text-center leading-snug mb-4 break-keep tracking-tight text-[#1A1A1C]">
+                    창업비 약 <span className="text-[#D32F2F] text-[1.2em] inline-block -rotate-2">5000</span>만원에<br/>
+                    <span className="text-[#D32F2F] text-[1.3em] block mt-5 inline-block rotate-2">듀얼 창업을!</span>
+                  </h3>
+                  <div className="w-full border-b-[4px] border-dotted border-[#1A1A1C]/30 mt-10 mb-6"></div>
+                  <p className="text-gray-500 text-sm sm:text-base font-bold text-center">
+                    (보증금, 권리금 제외)
+                  </p>
+                  
+                </div>
+             </motion.div>
+
+             {/* Cards */}
+             <motion.div 
+               initial="hidden"
+               animate="visible"
+               variants={{
+                 hidden: { opacity: 0 },
+                 visible: { opacity: 1, transition: { staggerChildren: 0.2, delayChildren: 2.4 } }
+               }}
+               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 w-full max-w-5xl mx-auto z-40 relative"
+             >
+               {[
+                   { title1: "", highlight: "50호점 돌파", title2: "!", desc1: "전국 각지에서", desc2: "성공을 증명하고 있습니다!" },
+                   { title1: "피자와 빙수로 ", highlight: "365 성수기", title2: "", desc1: "여름엔 빙수, 겨울엔 피자!", desc2: "계절을 타지 않는 안정적인 매출" },
+                   { title1: "집중된 두가지로 ", highlight: "전문성 있는 맛", title2: "", desc1: "선택과 집중으로", desc2: "놀라운 맛의 퀄리티 달성!" },
+                   { title1: "", highlight: "간편한 조리시스템", title2: "", desc1: "초보자도 당장 가능한", desc2: "효율적인 주방 운영" },
+                   { title1: "담당 슈퍼바이저 ", highlight: "배정", title2: "", desc1: "매장 오픈부터 운영까지", desc2: "전문가의 1:1 밀착 관리" },
+                   { title1: "유료 상권 분석 ", highlight: "무료 제공", title2: "", desc1: "지역별 데이터 기반", desc2: "최적의 입지 선정 무료 컨설팅" }
+               ].map((card, idx) => (
+                   <motion.div 
+                     variants={{
+                       hidden: { opacity: 0, y: 30, scale: 0.9 },
+                       visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", bounce: 0.5 } }
+                     }}
+                     key={idx} 
+                     className="bg-white pl-10 pr-4 py-8 sm:py-10 flex flex-col items-center justify-center text-center shadow-[0_15px_30px_rgba(0,0,0,0.6)] min-h-[160px] sm:min-h-[220px] relative overflow-hidden group hover:-translate-y-1 transition-transform"
+                   >
+                       <h3 className="text-xl sm:text-2xl lg:text-2xl font-black text-[#1A1A1C] mb-4 sm:mb-6 leading-tight break-keep">
+                           {card.title1}<br className="hidden sm:block lg:hidden"/><span className="text-[#D32F2F]">{card.highlight}</span>{card.title2}
+                       </h3>
+                       <p className="text-gray-700 font-bold text-sm lg:text-base break-keep leading-relaxed px-2">
+                           {card.desc1}<br/>{card.desc2}
+                       </p>
+                       <div className="absolute left-0 inset-y-0 w-8 md:w-10 pointer-events-none bg-gray-50 flex items-center justify-center overflow-hidden border-r border-black/5">
+                          <div className="text-center -rotate-90 whitespace-nowrap text-[1.5rem] font-black tracking-widest text-black/10 uppercase" style={{ transformOrigin: 'center center' }}>BING&PIZZA</div>
+                       </div>
+                   </motion.div>
+               ))}
+             </motion.div>
              <motion.div
                initial={{ opacity: 0, y: 20 }}
                animate={{ opacity: 1, y: 0 }}
                transition={{ duration: 0.8, delay: 1.8 }}
-               className="w-full max-w-xl mx-auto mb-10 lg:mb-16 z-40 relative text-left bg-white/10 backdrop-blur-md border border-white/20 p-6 sm:p-8 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+               className="w-full max-w-xl mx-auto mt-16 mb-10 lg:mt-24 z-40 relative text-left bg-white/10 backdrop-blur-md border border-white/20 p-6 sm:p-8 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
              >
                {/* Mobile Phone Call Button */}
                <a href="#" onClick={(e) => { e.preventDefault(); scrollToForm(); }} className="hidden">
@@ -747,10 +798,14 @@ export default function LandingPage() {
                
                {/* PC Phone Call Display */}
                <div className="w-full flex flex-col relative">
-                                   <h3 className="text-white text-lg sm:text-xl font-black mb-5 text-center font-display flex items-center justify-center gap-2">
-                    <span className="w-2 h-2 bg-[#E53935] rounded-full animate-ping" />
-                    빠른 무료 창업상담 신청
-                  </h3>
+                  <div className="mb-8 text-center flex flex-col items-center justify-center">
+                    <h3 className="text-white text-2xl sm:text-3xl font-black text-center font-display leading-snug drop-shadow-md break-keep">
+                      찔러만 보셔도 좋습니다.<br />
+                      강요 하지 않습니다.<br />
+                      궁금한 부분만 설명드립니다.<br />
+                      <span className="text-[#F1C40F]">부담없이 문의주세요!</span>
+                    </h3>
+                  </div>
                                    <form onSubmit={handleFormSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
@@ -800,10 +855,7 @@ export default function LandingPage() {
                       />
                     </div>
 
-                 <p className="text-2xl lg:text-3xl text-[#F1C40F] font-black tracking-tight drop-shadow-md relative z-10">
-                   상담 신청 접수 완료 시 즉시 연락드립니다.
-                  </p>
-                  
+
                   <div>
                     <div>
                       <label htmlFor="hero-memo" className="block text-xs font-bold text-gray-300 mb-1.5 pl-1">
@@ -883,71 +935,6 @@ export default function LandingPage() {
                 </div>
               </div>
               </motion.div>
-             
-             {/* Center Ticket Style Banner */}
-             <motion.div 
-                initial={{ opacity: 0, scale: 0.8, rotate: -4 }}
-                animate={{ opacity: 1, scale: 1, rotate: -1 }}
-                whileHover={{ scale: 1.05, rotate: 1 }}
-                transition={{ duration: 0.8, delay: 1.8, type: "spring", bounce: 0.5 }}
-                className="hidden"
-             >
-                <div className="bg-[#FFFDF5] w-full p-10 sm:p-14 shadow-[0_30px_70px_rgba(0,0,0,0.6)] relative overflow-hidden rounded-[40px] border-[6px] border-[#1A1A1C]">
-                  
-                  <div className="absolute top-1/2 -left-6 bg-[#18181A] w-12 h-12 rounded-full -translate-y-1/2 border-[6px] border-[#1A1A1C]"></div>
-                  <div className="absolute top-1/2 -right-6 bg-[#18181A] w-12 h-12 rounded-full -translate-y-1/2 border-[6px] border-[#1A1A1C]"></div>
-
-                  <div className="w-full border-b-[4px] border-dotted border-[#1A1A1C]/30 mb-8 mt-2"></div>
-                  <h3 className="text-4xl sm:text-5xl md:text-[60px] font-black text-center leading-snug mb-4 break-keep tracking-tight text-[#1A1A1C]">
-                    창업비 약 <span className="text-[#D32F2F] text-[1.2em] inline-block -rotate-2">5000</span>만원에<br/>
-                    <span className="text-[#D32F2F] text-[1.3em] block mt-5 inline-block rotate-2">듀얼 창업을!</span>
-                  </h3>
-                  <div className="w-full border-b-[4px] border-dotted border-[#1A1A1C]/30 mt-10 mb-6"></div>
-                  <p className="text-gray-500 text-sm sm:text-base font-bold text-center">
-                    (보증금, 권리금 제외)
-                  </p>
-                  
-                </div>
-             </motion.div>
-
-             {/* Cards */}
-             <motion.div 
-               initial="hidden"
-               animate="visible"
-               variants={{
-                 hidden: { opacity: 0 },
-                 visible: { opacity: 1, transition: { staggerChildren: 0.2, delayChildren: 2.4 } }
-               }}
-               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 w-full max-w-5xl mx-auto z-40 relative"
-             >
-               {[
-                   { title1: "", highlight: "50호점 돌파", title2: "!", desc1: "전국 각지에서", desc2: "성공을 증명하고 있습니다!" },
-                   { title1: "피자와 빙수로 ", highlight: "365 성수기", title2: "", desc1: "여름엔 빙수, 겨울엔 피자!", desc2: "계절을 타지 않는 안정적인 매출" },
-                   { title1: "집중된 두가지로 ", highlight: "전문성 있는 맛", title2: "", desc1: "선택과 집중으로", desc2: "놀라운 맛의 퀄리티 달성!" },
-                   { title1: "", highlight: "간편한 조리시스템", title2: "", desc1: "초보자도 당장 가능한", desc2: "효율적인 주방 운영" },
-                   { title1: "담당 슈퍼바이저 ", highlight: "배정", title2: "", desc1: "매장 오픈부터 운영까지", desc2: "전문가의 1:1 밀착 관리" },
-                   { title1: "유료 상권 분석 ", highlight: "무료 제공", title2: "", desc1: "지역별 데이터 기반", desc2: "최적의 입지 선정 무료 컨설팅" }
-               ].map((card, idx) => (
-                   <motion.div 
-                     variants={{
-                       hidden: { opacity: 0, y: 30, scale: 0.9 },
-                       visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", bounce: 0.5 } }
-                     }}
-                     key={idx} 
-                     className="bg-white pl-10 pr-4 py-8 sm:py-10 flex flex-col items-center justify-center text-center shadow-[0_15px_30px_rgba(0,0,0,0.6)] min-h-[160px] sm:min-h-[220px] relative overflow-hidden group hover:-translate-y-1 transition-transform"
-                   >
-                       <h3 className="text-xl sm:text-2xl lg:text-2xl font-black text-[#1A1A1C] mb-4 sm:mb-6 leading-tight break-keep">
-                           {card.title1}<br className="hidden sm:block lg:hidden"/><span className="text-[#D32F2F]">{card.highlight}</span>{card.title2}
-                       </h3>
-                       <p className="text-gray-700 font-bold text-sm lg:text-base break-keep leading-relaxed px-2">
-                           {card.desc1}<br/>{card.desc2}
-                       </p>
-                       <div className="absolute left-0 inset-y-0 w-8 md:w-10 pointer-events-none bg-gray-50 flex items-center justify-center overflow-hidden border-r border-black/5">
-                          <div className="text-center -rotate-90 whitespace-nowrap text-[1.5rem] font-black tracking-widest text-black/10 uppercase" style={{ transformOrigin: 'center center' }}>BING&PIZZA</div>
-                       </div>
-                   </motion.div>
-               ))}
-             </motion.div>
           </div>
         </section>
 
