@@ -706,8 +706,9 @@ export default function LandingPage() {
                className="text-white text-4xl sm:text-5xl md:text-[72px] lg:text-[88px] xl:text-[100px] font-black mb-6 lg:mb-10 tracking-tighter leading-[1.2] drop-shadow-lg break-keep"
                style={{ perspective: 1000 }}
              >
-               인생이 걸린 창업,<br/> 리스크를 최대한 줄여드립니다.
-             </motion.h1>
+               <span className="block text-2xl sm:text-3xl md:text-4xl text-gray-300 font-bold mb-4 lg:mb-6 tracking-normal drop-shadow-md">여름엔 빙수, 겨울엔 피자!</span>
+               비수기 없는 <br className="md:hidden"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F1C40F] to-[#FFD54F] drop-shadow-none">완벽한 수익구조</span>
+</motion.h1>
 
              <motion.p 
                 initial={{ opacity: 0, scale: 0.5 }}
@@ -799,12 +800,28 @@ export default function LandingPage() {
                {/* PC Phone Call Display */}
                <div className="w-full flex flex-col relative">
                   <div className="mb-8 text-center flex flex-col items-center justify-center">
-                    <h3 className="text-white text-2xl sm:text-3xl font-black text-center font-display leading-snug drop-shadow-md break-keep">
-                      찔러만 보셔도 좋습니다.<br />
-                      강요 하지 않습니다.<br />
-                      궁금한 부분만 설명드립니다.<br />
-                      <span className="text-[#F1C40F]">부담없이 문의주세요!</span>
+                    <div className="bg-[#E53935]/20 border border-[#E53935]/50 rounded-full px-4 py-1.5 mb-5 inline-block">
+                      <span className="text-[#F1C40F] font-bold text-sm tracking-tight animate-pulse">🚨 2,400만원 창업지원 (선착순 3명 마감임박)</span>
+                    </div>
+                    <h3 className="text-white text-2xl sm:text-3xl lg:text-4xl font-black text-center font-display leading-snug drop-shadow-md break-keep">
+                      단 1분의 문의가 <br className="sm:hidden" />
+                      <span className="text-[#F1C40F]">매출의 터닝포인트</span>가 됩니다.
                     </h3>
+                    <p className="text-gray-300 text-sm sm:text-base mt-4 mb-6 font-medium break-keep leading-relaxed">
+                      "정말 수익이 날까? 우리 동네도 가능할까?"<br />
+                      <span className="font-bold text-white">궁금한 점만 묻고 끊으셔도 좋습니다.</span>
+                    </p>
+                    
+                    <div className="flex flex-col gap-2 text-sm sm:text-base font-bold text-white bg-black/40 rounded-2xl p-5 border border-white/10 w-full mx-auto shadow-inner">
+                      <div className="flex items-center gap-3 text-left">
+                        <div className="w-6 h-6 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center shrink-0">✓</div>
+                        <span className="break-keep">가맹비/교육비 등 <span className="text-[#F1C40F]">2,400만원 전액 면제</span></span>
+                      </div>
+                      <div className="flex items-center gap-3 text-left">
+                        <div className="w-6 h-6 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center shrink-0">✓</div>
+                        <span className="break-keep">희망 지역 <span className="text-[#F1C40F]">A급 상권 무료 분석</span> 리포트 제공</span>
+                      </div>
+                    </div>
                   </div>
                                    <form onSubmit={handleFormSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -850,7 +867,7 @@ export default function LandingPage() {
                         required
                         value={leadForm.region}
                         onChange={handleInputChange}
-                        placeholder="예: 서울 관악구, 경기 수원시 등"
+                        placeholder="예: 서울 관악구 (무료 상권 분석 제공)"
                         className="w-full px-4 py-3 bg-[#1A1A1C]/80 hover:bg-[#252528] focus:bg-[#252528] border border-white/10 focus:border-[#E53935] text-white rounded-xl text-sm font-bold focus:outline-none transition-all placeholder:text-gray-500"
                       />
                     </div>
@@ -918,7 +935,7 @@ export default function LandingPage() {
                         </>
                       ) : (
                         <>
-                          <span>무료 창업 상담 신청하기</span>
+                          <span>선착순 혜택 선점 및 무료상담 신청</span>
                           <ArrowRight className="w-4 h-4" />
                         </>
                       )}
@@ -1052,10 +1069,10 @@ export default function LandingPage() {
                   className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full sm:w-auto"
                 >
                   <CTAButton onClick={scrollToForm} variant="primary" className="w-full sm:w-auto text-[15px] sm:text-base px-6 py-3 sm:px-8 sm:py-4 hover:scale-105 transition-transform">
-                    창업 상담 신청하기
+                    무료 상권 분석 받기
                   </CTAButton>
                   <CTAButton onClick={scrollToForm} variant="secondary" className="w-full sm:w-auto text-[15px] sm:text-base px-6 py-3 sm:px-8 sm:py-4 bg-white hover:bg-gray-50 hover:scale-105 transition-transform">
-                    예상 창업 비용 받아보기
+                    2,400만원 면제 혜택 확인
                   </CTAButton>
                 </motion.div>
               </div>
@@ -1257,10 +1274,10 @@ export default function LandingPage() {
                  상당의 <span className="text-[#FACC15]">12가지 창업혜택!</span>
                </h3>
                <p className="text-gray-300 font-bold text-lg sm:text-xl md:text-2xl mb-12 break-keep">
-                 딱! 10분 상담으로 다르다는 걸 느낄 수 있습니다.
+                 우리 동네 A급 상권은 먼저 찜하는 사람이 임자입니다.
                </p>
                <button onClick={scrollToForm} className="bg-[#E53935] text-white font-black text-xl sm:text-2xl md:text-3xl px-12 sm:px-20 py-6 rounded-[40px] shadow-2xl hover:-translate-y-1 hover:shadow-3xl transition-all">
-                 상담신청하기
+                 2400만원 혜택받고 선점하기
                </button>
              </div>
           </div>
@@ -1871,10 +1888,10 @@ export default function LandingPage() {
 
               <div className="md:w-2/3 p-8 sm:p-12 flex flex-col justify-center text-left">
                 <h3 className="text-2xl sm:text-3xl font-black text-[#1A1A1C] mb-2 font-display">
-                  무료 창업 상담 신청
+                  2,400만원 혜택 선착순 신청
                 </h3>
                 <p className="text-gray-400 mb-8 text-xs sm:text-sm break-keep leading-relaxed font-semibold">
-                  성함과 연락처를 남겨주시면, 가맹본부 창업 전문가가 검토 후 신속하게 개별 연락드리겠습니다.
+                  신청 시 A급 상권 무료 분석 리포트를 함께 보내드립니다. 궁금한 점만 묻고 편하게 끊으셔도 좋습니다.
                 </p>
 
                 {submitStatus === 'success' ? (
@@ -1944,7 +1961,7 @@ export default function LandingPage() {
                         required
                         value={leadForm.region}
                         onChange={handleInputChange}
-                        placeholder="예: 서울 관악구, 경기 수원시 등"
+                        placeholder="예: 서울 관악구 (무료 상권 분석 제공)"
                         className="w-full px-4 py-3 border border-[#E5E0D5] rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-tomato/20 focus:border-brand-tomato bg-brand-cream/20 text-sm placeholder:text-gray-400 font-medium transition-all"
                       />
                     </div>
@@ -2002,7 +2019,7 @@ export default function LandingPage() {
                         </>
                       ) : (
                         <>
-                          <span>무료 창업 상담 신청하기</span>
+                          <span>선착순 혜택 선점 및 무료상담 신청</span>
                           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </>
                       )}
@@ -2042,7 +2059,7 @@ export default function LandingPage() {
               본사의 교육 및 물류 시스템을 바탕으로 가맹점주님의 초기 매장 안착과 운영을 위해 힘쓰겠습니다. 희망 출점 지역을 남겨주시면 해당 지역의 실질적인 상황을 참고하여 연락드리겠습니다.
             </p>
             <CTAButton onClick={scrollToForm} variant="primary" className="px-10 py-5 text-base shadow-2xl">
-              가맹 출점 가능성 및 혜택 상담하기 &rarr;
+              내 상권에서 시작하면 얼마 벌까? 1분만에 확인하기 &rarr;
             </CTAButton>
           </div>
         </section>
@@ -2154,9 +2171,9 @@ export default function LandingPage() {
               <div className="hidden lg:flex flex-col text-left shrink-0">
                 <h4 className="font-extrabold text-base text-[#F1C40F] tracking-tight flex items-center gap-2 font-display">
                   <span className="inline-block w-2 h-2 bg-brand-tomato rounded-full animate-pulse" />
-                  실시간 1:1 창업 무료상담
+                  선착순 혜택 및 창업 무료상담
                 </h4>
-                <p className="text-[11px] text-gray-300 font-extrabold mt-0.5 whitespace-nowrap">성함 / 연락처 / 희망지역 입력 시 즉시 연락!</p>
+                <p className="text-[11px] text-gray-300 font-extrabold mt-0.5 whitespace-nowrap">무료 상권 분석 및 2,400만원 혜택 안내!</p>
               </div>
 
               {/* Status State (Success or Error) */}
@@ -2256,8 +2273,8 @@ export default function LandingPage() {
                         <RefreshCw className="w-4 h-4 animate-spin" />
                       ) : (
                         <>
-                          <span className="hidden sm:inline">신청하기</span>
-                          <span className="inline sm:hidden">신청</span>
+                          <span className="hidden sm:inline">무료 접수하기</span>
+                          <span className="inline sm:hidden">무료접수</span>
                           <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </>
                       )}
